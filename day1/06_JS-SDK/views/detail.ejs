@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no;">
+  <title>forzl</title>
+  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">  
+  <style>
+    body {
+      margin: 0 auto;
+      background-color: #27ae60;
+      /* display: table-cell;
+      vertical-align:middle; */
+    }
+    #list {
+      background-color: whitesmoke;
+      text-align: center;
+      width: 90%;
+      height: 70vh;
+      margin-left: 5%;
+      box-shadow: 0 0 20px #777777;
+      font-size:smaller;
+    }
+    .tip {
+      font-size: x-large;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body align='center'>
+  <p class="tip">随缘一话</p>
+  <div id="list"></div>
+  <button id="next" class="btn btn-info btn-lg">下一句</button>
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+  <script src="https://cdn.bootcss.com/zepto/1.0rc1/zepto.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script>
+    window.onload = function () {
+        wx.config({
+            debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            appId: 'wxb458006e972297ae', // 必填，公众号的唯一标识
+            timestamp: '<%= timestamp %>', // 必填，生成签名的时间戳
+            nonceStr: '<%= noncestr %>', // 必填，生成签名的随机串
+            signature: '<%= signature %>',// 必填，签名
+            jsApiList: [
+              'onMenuShareQZone'
+            ] // 必填，需要使用的JS接口列表
+        });
+
+        // 当config信息验证后会执行ready方法
+        wx.ready(function(){
+          //
+          var url = 'https://v1.hitokoto.cn/';
+          // 获取随机一段文字
+            $.getJSON(url,data => {
+              var {hitokoto,from,creator} = data;
+              $('#list').html(
+                '<img src="https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture" alt="音乐封面" class="img-thumbnail" width="600vw" height="700vh">' + 
+                '<h4>《 '+ from +' 》</h4>' +
+                '<h5>'+ hitokoto +'</h5>' +
+                '<h5>   --'+ creator +'</h5>'
+              )
+            })
+
+            $('#next').tap(() => {
+              $.getJSON(url,data => {
+              var {hitokoto,from,creator} = data;
+              $('#list').html(
+                '<img src="https://unsplash.it/1600/900?random" alt="音乐封面" width="600vw" class="img-thumbnail" height="700vh">' + 
+                '<h4>《'+ from +'》</h4>' +
+                '<h5>'+ hitokoto +'</h5>' +
+                '<h5>   --'+ creator +'</h5>'
+              )
+            })
+            })
+        })
+        // 当config信息验证失败会执行error函数
+        wx.error(function(res){
+            // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，
+            //也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+        });
+    }
+  </script>
+  
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no;">
+    <title>随缘音乐</title>
+    <style>
+        body {
+            margin: 0 auto;
+        }
+        #list {
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- <h2 id="search">这是一个搜索页面</h2>
+    <button id="search2">点击查询天气</button> -->
+    <ul id="list">
+        
+    </ul>
+    <!-- <button id="share">分享到QQ空间</button> -->
+
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+    <script src="https://cdn.bootcss.com/zepto/1.0rc1/zepto.min.js"></script>
+    <script>
+        /*
+            1. 绑定域名
+                - 在接口号测试页面填写js安全接口域名
+            2. 引入JS文件
+                - http://res.wx.qq.com/open/js/jweixin-1.4.0.js
+            3. 通过config接口注入权限验证配置
+        */
+        window.onload = function () {
+        wx.config({
+            debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            appId: 'wxb458006e972297ae', // 必填，公众号的唯一标识
+            timestamp: '<%= timestamp %>', // 必填，生成签名的时间戳
+            nonceStr: '<%= noncestr %>', // 必填，生成签名的随机串
+            signature: '<%= signature %>',// 必填，签名
+            jsApiList: [
+                'onMenuShareQZone',
+                'startRecord',
+                'stopRecord',
+                'translateVoice'
+            ] // 必填，需要使用的JS接口列表
+        });
+
+        // 当config信息验证后会执行ready方法
+        wx.ready(function(){
+            // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，
+            //config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。
+            //对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+
+            // 验证接口是否有权限
+            // wx.checkJsApi({
+            //     jsApiList: [
+            //         'onMenuShareQZone',
+            //         'startRecord',
+            //         'stopRecord',
+            //         'translateVoice'
+            //     ], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+            //     success: function(res) {
+            //     // 以键值对的形式返回，可用的api值true，不可用为false
+            //     // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+            //     console.log(res);
+            //      // 设置标志位 , 是否在录音中
+            //     var isRecord = false;
+            //     },
+            //     fail: function (err) {
+
+            //     }
+            // });
+
+           
+            // // 语音识别功能
+            // $('#search').tap(function () {
+
+            //     if (!isRecord) {
+            //         // 开始录音
+            //         wx.startRecord();
+            //         isRecord = true;
+            //     } else {
+            //         // 结束录音
+            //         wx.stopRecord({
+            //             success: function (res) {
+            //                 // 结束录音后会自动上传到微信服务器，并返回给开发者一个ID
+            //                 var localId = res.localId;
+            //                 // 将录音转换为文字
+            //                 // wx.translateVoice({
+            //                 //     localId: localId, // 需要识别的音频的本地Id，由录音相关接口获得
+            //                 //     isShowProgressTips: 1, // 默认为1，显示进度提示
+            //                 //     success: function (res) {
+            //                 //         alert(res.translateResult); // 语音识别的结果
+            //                 //     }
+            //                 // });
+            //                 isRecord = false;
+            //             }
+            //         });
+            //     }   
+            // });
+
+            // // 查询天气
+            // $('#search2').tap(function () {
+                var file = {};
+                var url = 'https://api.uomg.com/api/rand.music?sort=热歌榜&format=json';
+                $.getJSON(url,function (data) {
+                    //alert(data);
+                    //console.log(data);
+                    var {data} = data;
+                    //file = data.data;
+                    //console.log(data);
+                    //for(let i in data) {
+                        $('#list').html(
+                         `<h3>`+ data.name +`</h3>
+                                <h5>`+ data.artistsname +`</h5>
+                                <div>
+                                    <img src="`+ data.picurl +`" alt="音乐封面" width="85%" height="60%">
+                                </div>
+                                <audio controls>
+                                    <source src="`+ data.url +`" type="audio/mpeg">
+                                    您的浏览器不支持 audio 元素。
+                                </audio>`
+                    );
+                    console.log(data);
+                    
+                    });
+                    //console.log(data);
+                })
+        // 当config信息验证失败会执行error函数
+        wx.error(function(res){
+            // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，
+            //也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+        });
+        }
+    </script>
+    
+</body>
+</html>
