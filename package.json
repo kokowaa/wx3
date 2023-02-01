@@ -4,7 +4,7 @@
   "dependencies": {
     "ejs": "^3.0.1",
     "express": "^4.17.1",
-    "mongoose": "^5.7.12",
+    "mongoose": "^5.13.15",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.8",
     "sha1": "^1.1.1",
